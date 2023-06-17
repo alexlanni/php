@@ -28,7 +28,7 @@ jobs:
         docker buildx ls
         docker buildx create --name builderx --driver docker-container --use builder-context
     - name: Set tag
-      run: echo "TAG=alessandrolanni/${GITHUB_BASE_REF}"
+      run: echo "TAG=alessandrolanni/${GITHUB_REF}"
     - name: Build the image
       run: docker buildx build --tag=$TAG --push --platform=linux/arm64,linux/amd64 .
     - name: Remove Builder
