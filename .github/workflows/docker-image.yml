@@ -27,10 +27,8 @@ jobs:
         docker run --privileged --rm tonistiigi/binfmt --install arm64 | true
         docker buildx ls
         docker buildx create --name builderx --driver docker-container --use builder-context
-    - name: Set tag
-      run: echo "TAG=${GITHUB_REF#refs/*/}"
     - name: Build the image
-      run: docker buildx build --tag=alessandrolanni/$TAG --push --platform=linux/arm64,linux/amd64 .
+      run: docker buildx build --tag=alessandrolanni/${GITHUB_REF#refs/*/} --push --platform=linux/arm64,linux/amd64 .
     - name: Remove Builder
       run: docker buildx rm builderx
     - name: Remove Context
