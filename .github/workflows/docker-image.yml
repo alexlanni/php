@@ -29,7 +29,7 @@ jobs:
         docker buildx create --name builderx --driver docker-container --use builder-context
     - name: Build the image
       env:
-        TAG: alessandrolanni/${{GITHUB_BASE_REF}}
+        TAG: alessandrolanni/$GITHUB_BASE_REF
       run: docker buildx build --tag=$TAG --push --platform=linux/arm64,linux/amd64 .
     - name: Remove Builder
       run: docker buildx rm builderx
