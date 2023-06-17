@@ -1,0 +1,35 @@
+name: PHP 8.1 custom
+
+on:
+  push:
+    branches: [ php-8.1-apache-develop ]
+  pull_request:
+    branches: [ php-8.1-apache-develop ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker Login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: Create context
+      run: docker context create builder-context
+    - name: Build the Docker buildx
+      run: |
+        docker run --privileged --rm tonistiigi/binfmt --install arm64 | true
+        docker buildx ls
+        docker buildx create --name builderx --driver docker-container --use builder-context
+    - name: Build the image
+      run: docker buildx build --tag=alessandrolanni/${GITHUB_BASE_REF} --push --platform=linux/arm64,linux/amd64 .
+    - name: Remove Builder
+      run: docker buildx rm builderx
+    - name: Remove Context
+      run: docker context rm builder-context
