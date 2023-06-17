@@ -1,4 +1,4 @@
-name: PHP 8.1 custom
+name: PHP 8.2 custom
 
 on:
   push:
